@@ -1,0 +1,23 @@
+{
+  "name": "xi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pangpang12/wxkf.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pangpang12/wxkf/issues"
+  },
+  "homepage": "https://github.com/pangpang12/wxkf#readme",
+  "dependencies": {
+    "express-session": "^1.15.2",
+    "moment": "^2.18.1"
+  }
+}

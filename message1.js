@@ -50,31 +50,35 @@ console.log("Server running at port:"+PORT+".");
 
 
 function replyText(msg) {
-    var msgtype=msg.xml.MsgType[0];
-    switch (msgtype){
-        case 'text':
-            feedback='文本消息';
-            break;
-        case 'image':
-            feedback='图片消息';
-            break;
-        case 'shortvideo':
-            feedback='小视频';
-            break;
-        case 'video':
-            feedback='视频消息';
-            break;
-        case 'voice':
-            feedback='语音消息';
-            break;
-        case 'location':
-            feedback='你的位置'+'经度:'+result.Location_X;
-            break;
-        case 'link':
-            feedback='链接消息';
-            break;
-        default:
-            feedback='未知类型消息'
+    try {
+        var msgtype=msg.xml.MsgType[0];
+        switch (msgtype){
+            case 'text':
+                feedback='文本消息';
+                break;
+            case 'image':
+                feedback='图片消息';
+                break;
+            case 'shortvideo':
+                feedback='小视频';
+                break;
+            case 'video':
+                feedback='视频消息';
+                break;
+            case 'voice':
+                feedback='语音消息';
+                break;
+            case 'location':
+                feedback='你的位置'//+'经度:'+result.Location_X;
+                break;
+            case 'link':
+                feedback='链接消息';
+                break;
+            default:
+                feedback='未知类型消息'
+        }
+    }catch (err){
+        return err.message;
     }
 
     var tmpl=require('tmpl');
@@ -96,3 +100,6 @@ function replyText(msg) {
 
 }
 ////
+////////03271543
+
+////////03271543
