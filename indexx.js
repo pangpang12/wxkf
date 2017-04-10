@@ -5,6 +5,11 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var session = require('express-session');
 var moment = require('moment');
+var window = require('window');
+
+//为了免登陆加的东西
+var http = require('http');
+var qs = require('qs');
 
 //引入mongoose
 var mongoose = require('mongoose');
@@ -37,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session({
     secret: '1234',
     name: 'mynote',
-    cookie: {maxAge: 1000*60*20}, //设置session的保存时间为20分钟
+    cookie: {maxAge: 1000*60*60*24*7}, //设置session的保存时间为20分钟
     resave: false,
     saveUninitialized: true
 }));
@@ -95,6 +100,39 @@ app.get('/register',function (req,res) {
 
 });
 
+
+//用户名或者密码输入错误时的提示
+var er=['用户名长度必须为3~20','用户名字符类型有误','密码长度太小','密码字符类型有误','两次输入的密码不一致！','用户不存在！'];
+app.get('/register0',function (req,res) {
+    res.render('register0',{err:er[0]});
+
+})
+
+app.get('/register1',function (req,res) {
+    res.render('register1',{err:er[1]});
+
+})
+
+app.get('/register2',function (req,res) {
+    res.render('register2',{err:er[2]} );
+
+})
+
+app.get('/register3',function (req,res) {
+    res.render('register3',{err:er[3]});
+
+})
+
+app.get('/register4',function (req,res) {
+    res.render('register4',{err:er[4]});
+
+})
+
+app.get('/register5',function (req,res) {
+    res.render('register5',{err:er[5]});
+
+})
+
 //post请求
 app.post('/register',function (req,res) {
 
@@ -106,7 +144,8 @@ app.post('/register',function (req,res) {
     //判断username长度，然后判断内容
     if (username.length<3||username.length>20){
         console.log('用户名长度必须为3~20');
-        return res.redirect('/register');
+
+        return res.redirect('/register',{name:er[0]});
     }else {
         for (var i=0;i<username.length;i++){
             if(!(username[i]>='a'&&username[i]<='z')){
@@ -114,6 +153,7 @@ app.post('/register',function (req,res) {
                     if(!(username[i]>='0'&&username[i]<='9')){
                         if(username[i]!='_'){
                             console.log('用户名字符类型有误');
+                            e[1]=1;
                             return res.redirect('/register');
                         }
                     }
@@ -132,6 +172,7 @@ app.post('/register',function (req,res) {
     var ps22=0;
     if(password.length<6){
         console.log('密码长度太小')
+
         return res.redirect('/register')
     }else{
         for (var n=0;n<ps0.length;n++){
@@ -145,6 +186,7 @@ app.post('/register',function (req,res) {
         }
         if(ps00==-10||ps11==-26||ps22==-26){
             console.log('密码字符类型有误');
+
             return res.redirect('/register');
         }
     }
@@ -164,6 +206,7 @@ app.post('/register',function (req,res) {
     //检查两次输入的密码是否一致
     if (password != passwordRepeat){
         console.log('两次输入的密码不一致！');
+
         return res.redirect('/register');
     }
 
@@ -176,6 +219,7 @@ app.post('/register',function (req,res) {
 
         if (user){
             console.log('用户名已经存在');
+
             return res.redirect('/register');
         }
 
@@ -206,8 +250,14 @@ app.post('/register',function (req,res) {
 app.get('/login',function (req,res) {
     console.log('登录！');
     res.render('login',{
-        title:'登录'
+        title:'登录',
     });
+
+});
+
+app.get('/login0',function (req,res) {
+    console.log('登录错误！');
+    res.render('login0');
 
 });
 ////////
@@ -222,20 +272,22 @@ app.post('/login',function (req,res) {
         }
         if(!user){
             console.log('用户不存在！');
-            return res.redirect('/login');
+
+            return res.redirect('/login0',);
         }
         //对密码进行md5加密
         var md5 = crypto.createHash('md5'),
             md5password = md5.update(password).digest('hex');
         if(user.password !== md5password){
             console.log('密码错误！');
-            return res.redirect('/login');
+            return res.redirect('/login',{errlogin:'用户名或密码错误！'});
         }
         console.log('登录成功！');
+
         user.password = null;
         delete user.password;
         req.session.user = user;
-        return res.redirect('/post');
+        return res.redirect('/');
 
     });
 });
